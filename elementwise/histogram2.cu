@@ -88,8 +88,10 @@ int main(int argc, char** argv)
     checkCudaErrors(cudaEventCreate(&end));
     checkCudaErrors(cudaEventRecord(start, 0));
 
+    int block_size = 256;
     // cal_hist<<<block_num, 256>>>(d_buffer, d_hist, DATA_LEN); // 30.726688 ms
-    cal_hist2<<<block_num, 256>>>(d_buffer, d_hist, DATA_LEN);   // 4.517536  ms
+    // cal_hist2<<<block_num, 256>>>(d_buffer, d_hist, DATA_LEN);   // 4.517536  ms
+    cal_hist2<<<CeilDiv(DATA_LEN, block_size), block_size>>>(d_buffer, d_hist, DATA_LEN);
 
     float elapsed_time;
     checkCudaErrors(cudaEventRecord(end, 0));
